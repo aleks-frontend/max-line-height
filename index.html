@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>test</title>
+    <style type="text/css">
+        .text {
+            line-height: 2em;
+            width: 500px;
+            background: #e3e3e3;
+        }
+
+        .overflow {
+            border: 1px solid red;
+        }
+    </style>
+</head>
+<body>
+<div class="text" data-max-line="4">
+    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+    consequat. Duis aute irure dolor i consequat. Duis aute irure dolor iconsequat. Duis aute irure dolor i
+</div>
+<script type="text/javascript">
+    function maxLineCheck() {
+        const textBlocks = document.querySelectorAll('[data-max-line]');
+
+        textBlocks.forEach(block => {
+            const computedStyle = window.getComputedStyle(block);
+            const isNormal = computedStyle.getPropertyValue('line-height') == 'normal';
+            const fontSize = parseFloat(computedStyle.getPropertyValue('font-size'));
+            const lineHeight = isNormal ? (fontSize * 1.14) : parseFloat(computedStyle.getPropertyValue('line-height'));
+            const blockHeight = block.offsetHeight;
+            const maxLine = block.dataset.maxLine;
+
+            block.style.maxHeight = lineHeight * maxLine + 'px';
+
+            if ( blockHeight > lineHeight * maxLine ) {
+                block.classList.add('overflow');
+            }
+        });
+    }
+
+    var mutationObserver = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        console.log(mutation);
+      });
+    });
+
+    mutationObserver.observe(document.querySelector('.text'), {
+      attributes: false,
+      characterData: true,
+      childList: true,
+      subtree: true,
+      attributeOldValue: false,
+      characterDataOldValue: true
+    });
+
+    maxLineCheck();
+</script>
+</body>
+</html>
